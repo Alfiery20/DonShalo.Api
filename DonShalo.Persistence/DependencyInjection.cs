@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DonShalo.Application.Common.Interface;
+using DonShalo.Application.Common.Interface.Repositories;
 using DonShalo.Persistence.Database;
+using DonShalo.Persistence.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DonShalo.Persistence
@@ -15,7 +17,7 @@ namespace DonShalo.Persistence
         {
             services.AddTransient<IDataBase>(sp => new SqlDataBase(connectionString));
 
-            //services.AddSingleton<IAuthorizeRepository, AuthorizeRepository>();
+            services.AddSingleton<IAutenticacionRepository, AutenticacionRepository>();
             return services;
         }
     }

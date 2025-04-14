@@ -87,11 +87,10 @@ namespace DonShalo.api.Middlewares
 
             if (_env.IsDevelopment())
             {
-                error.InternalException = "Excepcion pendeja";
+                error.InternalException = exception;
             }
 
-            //return context.Response.WriteAsync(JsonConvert.SerializeObject(error, settings));
-            return context.Response.WriteAsync("Excepcion pendeja");
+            return context.Response.WriteAsync(JsonConvert.SerializeObject(error, settings));
         }
 
     }

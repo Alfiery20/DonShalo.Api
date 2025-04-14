@@ -20,4 +20,9 @@
     <ProjectReference Include="..\DonShalo.Domain\DonShalo.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Autenticacion\Query\" />
+    <Folder Include="Autorizacion\" />
+  </ItemGroup>
+
 </Project>
