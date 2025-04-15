@@ -7,11 +7,11 @@ namespace DonShalo.api.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AutenticacionController : AbstractController
     {
         [HttpPost]
         [Route("iniciarSesion")]
-        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

@@ -1,4 +1,5 @@
-﻿using DonShalo.Application.Personal.Command.RegistrarUsuario;
+﻿using DonShalo.api.Filter;
+using DonShalo.Application.Personal.Command.RegistrarUsuario;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace DonShalo.api.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [AuthorizationFilter]
     public class PersonalController : AbstractController
     {
         [HttpPost]
