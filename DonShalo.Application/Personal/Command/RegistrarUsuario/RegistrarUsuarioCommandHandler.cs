@@ -8,26 +8,27 @@ using DonShalo.Application.Common.Interface.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace DonShalo.Application.Autenticacion.Command.RegistrarUsuario
+namespace DonShalo.Application.Personal.Command.RegistrarUsuario
 {
     public class RegistrarUsuarioCommandHandler : IRequestHandler<RegistrarUsuarioCommand, RegistrarUsuarioCommandDTO>
     {
         private readonly IMapper _mapper;
         private readonly ILogger<RegistrarUsuarioCommandHandler> _logger;
-        private readonly IAutenticacionRepository _autenticacionRepository;
+        private readonly IPersonalRepository _personalRepository;
 
         public RegistrarUsuarioCommandHandler(
             IMapper mapper,
             ILogger<RegistrarUsuarioCommandHandler> logger,
-            IAutenticacionRepository autenticacionRepository)
+            IPersonalRepository personalRepository
+            )
         {
-            this._mapper = mapper;
-            this._logger = logger;
-            this._autenticacionRepository = autenticacionRepository;
+            _mapper = mapper;
+            _logger = logger;
+            this._personalRepository = personalRepository;
         }
         public Task<RegistrarUsuarioCommandDTO> Handle(RegistrarUsuarioCommand request, CancellationToken cancellationToken)
         {
-            var response = this._autenticacionRepository.RegistrarPersonal(request);
+            var response = this._personalRepository.RegistrarPersonal(request);
             return response;
         }
     }

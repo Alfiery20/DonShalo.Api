@@ -23,6 +23,7 @@
   <ItemGroup>
     <Folder Include="Autenticacion\Query\" />
     <Folder Include="Autorizacion\" />
+    <Folder Include="Personal\Query\" />
   </ItemGroup>
 
 </Project>

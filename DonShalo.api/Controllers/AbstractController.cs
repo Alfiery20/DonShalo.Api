@@ -11,6 +11,6 @@ namespace DonShalo.api.Controllers
         private IMediator _mediator;
         private ICurrentUser _CurrentUser;
         protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
-        protected ICurrentUser CurrentUser => HttpContext.Session.GetString("dataUser") == null ? JsonConvert.DeserializeObject<CurrentUser>(HttpContext.Session.GetString("dataUser")) : null;
+        protected ICurrentUser CurrentUser => HttpContext.Session.GetString("dataUser") != null ? JsonConvert.DeserializeObject<CurrentUser>(HttpContext.Session.GetString("dataUser")) : null;
     }
 }

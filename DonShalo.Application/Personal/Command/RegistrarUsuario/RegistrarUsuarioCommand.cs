@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MediatR;
 
-namespace DonShalo.Application.Autenticacion.Command.RegistrarUsuario
+namespace DonShalo.Application.Personal.Command.RegistrarUsuario
 {
     public class RegistrarUsuarioCommand : IRequest<RegistrarUsuarioCommandDTO>
     {

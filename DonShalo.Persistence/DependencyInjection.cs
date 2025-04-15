@@ -18,6 +18,9 @@ namespace DonShalo.Persistence
             services.AddTransient<IDataBase>(sp => new SqlDataBase(connectionString));
 
             services.AddSingleton<IAutenticacionRepository, AutenticacionRepository>();
+            services.AddSingleton<IAutorizacionRepository, AutorizacionRepository>();
+            services.AddSingleton<IPersonalRepository, PersonalRepository>();
+
             return services;
         }
     }
