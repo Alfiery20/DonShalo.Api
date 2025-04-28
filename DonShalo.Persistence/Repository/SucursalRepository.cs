@@ -10,6 +10,8 @@ using DonShalo.Application.Common.Interface;
 using DonShalo.Application.Common.Interface.Repositories;
 using DonShalo.Application.Personal.Command.RegistrarUsuario;
 using DonShalo.Application.Sucursal.Command.AgregarSucursal;
+using DonShalo.Application.Sucursal.Command.EditarSucursal;
+using DonShalo.Application.Sucursal.Command.EliminarSucursal;
 using DonShalo.Application.Sucursal.Query.ObtenerSucursal;
 using DonShalo.Application.Sucursal.Query.VerSucursal;
 using DonShalo.Persistence.Database;
@@ -123,6 +125,61 @@ namespace DonShalo.Persistence.Repository
                     }
                     return response;
                 }
+            }
+        }
+
+        public async Task<EditarSucursalCommandDTO> EditarSucursal(EditarSucursalCommand command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pId", command.Nombre, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pNombre", command.Direccion, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pDireccion", command.Telefono, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pTelefono", command.Telefono, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pHoraIngreso", command.HoraIngreso.ToTimeSpan(), DbType.Time, ParameterDirection.Input);
+                parameters.Add("@pHoraSalida", command.HoraSalida.ToTimeSpan(), DbType.Time, ParameterDirection.Input);
+                parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
+                parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
+
+                using var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_EditarSucursal]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                var codigo = parameters.Get<string>("codigo");
+                var mensaje = parameters.Get<string>("msj");
+                return new EditarSucursalCommandDTO()
+                {
+                    Codigo = codigo,
+                    Mensaje = mensaje
+                };
+            }
+        }
+
+        public async Task<EliminarSucursalCommandDTO> EliminarSucursal(EliminarSucursalCommand command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pIdSucursal", command.Id, DbType.String, ParameterDirection.Input);
+                parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
+                parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
+
+                using var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_EliminarSucursal]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                var codigo = parameters.Get<string>("codigo");
+                var mensaje = parameters.Get<string>("msj");
+                return new EliminarSucursalCommandDTO()
+                {
+                    Codigo = codigo,
+                    Mensaje = mensaje
+                };
             }
         }
     }
