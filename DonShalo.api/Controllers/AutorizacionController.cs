@@ -1,4 +1,5 @@
 ﻿using DonShalo.api.Filter;
+using DonShalo.Application.Autorizacion.Command.ObtenerMenu;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +10,31 @@ namespace DonShalo.api.Controllers
     [AuthorizationFilter]
     public class AutorizacionController : AbstractController
     {
-        [HttpPost]
+        [HttpGet]
         [Authorize]
         [Route("UserInfo")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult UserInfoContr()
+        public IActionResult UserInfo()
         {
             return Ok(CurrentUser);
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("obtenerMenu")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenu()
+        {
+            var response = await Mediator.Send(new ObtenerMenuCommand()
+            {
+                IdRol = Convert.ToInt32(CurrentUser.RolId),
+                IdUsuario = Convert.ToInt32(CurrentUser.Identifier)
+            });
+            return Ok(response);
         }
     }
 }

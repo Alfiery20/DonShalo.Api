@@ -9,7 +9,6 @@ namespace DonShalo.api.Services
         public string ApellidoPaterno { get; set; }
         public string ApellidoMaterno { get; set; }
         public string NombreCompleto { get; set; }
-
         public string RolId { get; set; }
         public string Rol { get; set; }
     }
