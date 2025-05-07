@@ -38,9 +38,9 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@pnombre", command.Nombre, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pdireccion", command.Direccion, DbType.String, ParameterDirection.Input);
                 parameters.Add("@ptelefono", command.Telefono, DbType.String, ParameterDirection.Input);
-                parameters.Add("@pidEncargado", command.IdEncargado, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@pfechaEntrada", command.FechaEntrada.ToTimeSpan(), DbType.Time, ParameterDirection.Input);
-                parameters.Add("@pfechaSalida", command.FechaSalida.ToTimeSpan(), DbType.Time, ParameterDirection.Input);
+                //parameters.Add("@pidEncargado", command.IdEncargado, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pfechaEntrada", TimeOnly.Parse(command.FechaEntrada).ToTimeSpan(), DbType.Time, ParameterDirection.Input);
+                parameters.Add("@pfechaSalida", TimeOnly.Parse(command.FechaSalida).ToTimeSpan(), DbType.Time, ParameterDirection.Input);
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
@@ -134,10 +134,10 @@ namespace DonShalo.Persistence.Repository
             {
                 DynamicParameters parameters = new DynamicParameters();
 
-                parameters.Add("@pId", command.Nombre, DbType.String, ParameterDirection.Input);
-                parameters.Add("@pNombre", command.Direccion, DbType.String, ParameterDirection.Input);
-                parameters.Add("@pDireccion", command.Telefono, DbType.String, ParameterDirection.Input);
-                parameters.Add("@pTelefono", command.Telefono, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pId", command.Id, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pNombre", command.Nombre, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pDireccion", command.Direccion, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pTelefono", command.Telefono, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pHoraIngreso", command.HoraIngreso.ToTimeSpan(), DbType.Time, ParameterDirection.Input);
                 parameters.Add("@pHoraSalida", command.HoraSalida.ToTimeSpan(), DbType.Time, ParameterDirection.Input);
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);

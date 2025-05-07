@@ -12,8 +12,8 @@ namespace DonShalo.Application.Sucursal.Command.AgregarSucursal
         public string Nombre { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }
-        public int IdEncargado { get; set; }
-        public TimeOnly FechaEntrada { get; set; }
-        public TimeOnly FechaSalida { get; set; }
+        //public int IdEncargado { get; set; }
+        public string FechaEntrada { get; set; }
+        public string FechaSalida { get; set; }
     }
 }

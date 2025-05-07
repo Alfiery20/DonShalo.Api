@@ -28,11 +28,11 @@ namespace DonShalo.api.Controllers
         }
 
         [HttpGet]
-        [Route("obtenerSucursal/{termino}")]
+        [Route("obtenerSucursal/{termino?}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ObtenerSucursal(string termino)
+        public async Task<IActionResult> ObtenerSucursal(string? termino)
         {
             var response = await Mediator.Send(new ObtenerSucursalQuery()
             {
