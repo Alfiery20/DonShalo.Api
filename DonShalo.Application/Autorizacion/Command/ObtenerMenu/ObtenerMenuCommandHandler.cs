@@ -37,7 +37,7 @@ namespace DonShalo.Application.Autorizacion.Command.ObtenerMenu
         {
             foreach (var menu in command)
             {
-                var primerosHijos = command.Where(n => n.IdMenuPadre == menu.Id).ToList();
+                var primerosHijos = command.Where(n => n.IdMenuPadre == menu.Id).OrderBy(n => n.Orden).ToList();
                 menu.MenuHijo = primerosHijos;
                 this.LlenarArreglo(primerosHijos);
                 //ArrayPadre = this.LlenarArreglo(menu.MenuHijo);
