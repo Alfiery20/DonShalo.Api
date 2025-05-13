@@ -27,7 +27,7 @@ namespace DonShalo.Application.Personal.Query.ObtenerPersonal
         }
         public Task<IEnumerable<ObtenerPersonalQueryDTO>> Handle(ObtenerPersonalQuery request, CancellationToken cancellationToken)
         {
-            var response = this._personalRepository.ObtenerSucursales(request);
+            var response = this._personalRepository.ObtenerPersonal(request);
             return response;
         }
     }

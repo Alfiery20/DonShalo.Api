@@ -16,5 +16,6 @@ namespace DonShalo.Application.Personal.Query.ObtenerPersonal
         public string Correo { get; set; }
         public string Estado { get; set; }
         public string Rol { get; set; }
+        public string Sucursal { get; set; }
     }
 }

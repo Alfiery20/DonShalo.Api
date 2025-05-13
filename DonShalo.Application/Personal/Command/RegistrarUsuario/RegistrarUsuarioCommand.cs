@@ -18,5 +18,6 @@ namespace DonShalo.Application.Personal.Command.RegistrarUsuario
         public string Correo { get; set; }
         public string Clave { get; set; }
         public int IdRol { get; set; }
+        public int IdSucursal { get; set; }
     }
 }

@@ -1,10 +1,13 @@
 ﻿using DonShalo.api.Filter;
+using DonShalo.Application.Personal.Command.AsignarResponsable;
 using DonShalo.Application.Personal.Command.EditarPersonal;
 using DonShalo.Application.Personal.Command.EliminarPersonal;
 using DonShalo.Application.Personal.Command.RegistrarUsuario;
+using DonShalo.Application.Personal.Query.ObtenerMenuPersonal;
 using DonShalo.Application.Personal.Query.ObtenerPersonal;
 using DonShalo.Application.Personal.Query.VerPersonal;
 using DonShalo.Application.Sucursal.Command.EliminarSucursal;
+using DonShalo.Application.Sucursal.Query.ObtenerMenuSucursal;
 using DonShalo.Application.Sucursal.Query.VerSucursal;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -77,6 +80,32 @@ namespace DonShalo.api.Controllers
             {
                 IdPersonal = id
             });
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("obtenerMenuPersonal/{termino?}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenuPersonal(string? termino)
+        {
+            var response = await Mediator.Send(new ObtenerMenuPersonalQuery()
+            {
+                Termino = termino
+            });
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("asignarPersonal")]
+        [AllowAnonymous]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AsignarPersonal(AsignarResponsableCommand command)
+        {
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
     }

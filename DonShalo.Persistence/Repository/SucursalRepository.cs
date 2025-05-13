@@ -6,12 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using DonShalo.Application.Autenticacion.Command.IniciarSesion;
+using DonShalo.Application.Autorizacion.Command.ObtenerMenu;
 using DonShalo.Application.Common.Interface;
 using DonShalo.Application.Common.Interface.Repositories;
+using DonShalo.Application.Personal.Command.EliminarPersonal;
 using DonShalo.Application.Personal.Command.RegistrarUsuario;
 using DonShalo.Application.Sucursal.Command.AgregarSucursal;
 using DonShalo.Application.Sucursal.Command.EditarSucursal;
 using DonShalo.Application.Sucursal.Command.EliminarSucursal;
+using DonShalo.Application.Sucursal.Query.ObtenerMenuSucursal;
 using DonShalo.Application.Sucursal.Query.ObtenerSucursal;
 using DonShalo.Application.Sucursal.Query.VerSucursal;
 using DonShalo.Persistence.Database;
@@ -180,6 +183,33 @@ namespace DonShalo.Persistence.Repository
                     Codigo = codigo,
                     Mensaje = mensaje
                 };
+            }
+        }
+
+        public async Task<IEnumerable<ObtenerMenuSucursalQueryDTO>> ObtenerMenuSucursal(ObtenerMenuSucursalQuery command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pTermino", command.Termino, DbType.String, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_ObtenerMenuSucursal]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<ObtenerMenuSucursalQueryDTO> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new ObtenerMenuSucursalQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString()
+                        });
+                    }
+                    return response;
+                }
             }
         }
     }

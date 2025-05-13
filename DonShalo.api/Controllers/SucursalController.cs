@@ -3,6 +3,7 @@ using DonShalo.Application.Autenticacion.Command.IniciarSesion;
 using DonShalo.Application.Sucursal.Command.AgregarSucursal;
 using DonShalo.Application.Sucursal.Command.EditarSucursal;
 using DonShalo.Application.Sucursal.Command.EliminarSucursal;
+using DonShalo.Application.Sucursal.Query.ObtenerMenuSucursal;
 using DonShalo.Application.Sucursal.Query.ObtenerSucursal;
 using DonShalo.Application.Sucursal.Query.VerSucursal;
 using Microsoft.AspNetCore.Authorization;
@@ -76,6 +77,20 @@ namespace DonShalo.api.Controllers
             var response = await Mediator.Send(new EliminarSucursalCommand()
             {
                 Id = id
+            });
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("obtenerMenuSucursal/{termino?}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenuSucursal(string? termino)
+        {
+            var response = await Mediator.Send(new ObtenerMenuSucursalQuery()
+            {
+                Termino = termino
             });
             return Ok(response);
         }

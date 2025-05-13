@@ -16,5 +16,6 @@ namespace DonShalo.Application.Personal.Command.EditarPersonal
         public string Telefono { get; set; }
         public string Correo { get; set; }
         public int IdRol { get; set; }
+        public int IdSucursal { get; set; }
     }
 }

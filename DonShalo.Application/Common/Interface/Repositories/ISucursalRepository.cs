@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DonShalo.Application.Sucursal.Command.AgregarSucursal;
 using DonShalo.Application.Sucursal.Command.EditarSucursal;
 using DonShalo.Application.Sucursal.Command.EliminarSucursal;
+using DonShalo.Application.Sucursal.Query.ObtenerMenuSucursal;
 using DonShalo.Application.Sucursal.Query.ObtenerSucursal;
 using DonShalo.Application.Sucursal.Query.VerSucursal;
 
@@ -18,5 +19,6 @@ namespace DonShalo.Application.Common.Interface.Repositories
         Task<VerSucursalQueryDTO> VerSucursales(VerSucursalQuery query);
         Task<EditarSucursalCommandDTO> EditarSucursal(EditarSucursalCommand command);
         Task<EliminarSucursalCommandDTO> EliminarSucursal(EliminarSucursalCommand command);
+        Task<IEnumerable<ObtenerMenuSucursalQueryDTO>> ObtenerMenuSucursal(ObtenerMenuSucursalQuery command);
     }
 }

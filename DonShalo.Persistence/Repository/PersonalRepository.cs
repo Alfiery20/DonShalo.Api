@@ -6,11 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using DonShalo.Application.Autenticacion.Command.IniciarSesion;
+using DonShalo.Application.Autorizacion.Command.ObtenerMenu;
 using DonShalo.Application.Common.Interface;
 using DonShalo.Application.Common.Interface.Repositories;
+using DonShalo.Application.Personal.Command.AsignarResponsable;
 using DonShalo.Application.Personal.Command.EditarPersonal;
 using DonShalo.Application.Personal.Command.EliminarPersonal;
 using DonShalo.Application.Personal.Command.RegistrarUsuario;
+using DonShalo.Application.Personal.Query.ObtenerMenuPersonal;
 using DonShalo.Application.Personal.Query.ObtenerPersonal;
 using DonShalo.Application.Personal.Query.VerPersonal;
 using DonShalo.Application.Sucursal.Query.ObtenerSucursal;
@@ -43,7 +46,8 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@ptelefono", command.Telefono, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pcorreo", command.Correo, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pclave", this.cryptography.Encrypt(command.Clave), DbType.String, ParameterDirection.Input);
-                parameters.Add("@pidRol", command.IdRol, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pidRol", command.IdRol, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pidSucursal", command.IdSucursal, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
@@ -62,7 +66,7 @@ namespace DonShalo.Persistence.Repository
             }
         }
 
-        public async Task<IEnumerable<ObtenerPersonalQueryDTO>> ObtenerSucursales(ObtenerPersonalQuery query)
+        public async Task<IEnumerable<ObtenerPersonalQueryDTO>> ObtenerPersonal(ObtenerPersonalQuery query)
         {
             using (var cnx = _dataBase.GetConnection())
             {
@@ -91,6 +95,7 @@ namespace DonShalo.Persistence.Repository
                             Correo = Convert.IsDBNull(reader["CORREO"]) ? "" : reader["CORREO"].ToString(),
                             Estado = Convert.IsDBNull(reader["ESTADO"]) ? "" : reader["ESTADO"].ToString(),
                             Rol = Convert.IsDBNull(reader["ROL"]) ? "" : reader["ROL"].ToString(),
+                            Sucursal = Convert.IsDBNull(reader["SUCURSAL"]) ? "" : reader["SUCURSAL"].ToString(),
                         });
                     }
                     return response;
@@ -120,10 +125,13 @@ namespace DonShalo.Persistence.Repository
                             TipoDocumento = Convert.IsDBNull(reader["TIPO_DOCUMENTO"]) ? "" : reader["TIPO_DOCUMENTO"].ToString(),
                             NumeroDocumento = Convert.IsDBNull(reader["NUMERO_DOCUMENTO"]) ? "" : reader["NUMERO_DOCUMENTO"].ToString(),
                             Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString(),
+                            ApellidoPaterno = Convert.IsDBNull(reader["APELLIDO_PATERNO"]) ? "" : reader["APELLIDO_PATERNO"].ToString(),
+                            ApellidoMaterno = Convert.IsDBNull(reader["APELLIDO_MATERNO"]) ? "" : reader["APELLIDO_MATERNO"].ToString(),
                             Telefono = Convert.IsDBNull(reader["TELEFONO"]) ? "" : reader["TELEFONO"].ToString(),
                             Correo = Convert.IsDBNull(reader["CORREO"]) ? "" : reader["CORREO"].ToString(),
                             Estado = Convert.IsDBNull(reader["ESTADO"]) ? "" : reader["ESTADO"].ToString(),
                             Rol = Convert.IsDBNull(reader["ROL"]) ? 0 : Convert.ToInt32(reader["ROL"].ToString()),
+                            Sucursal = Convert.IsDBNull(reader["SUCURSAL"]) ? 0 : Convert.ToInt32(reader["SUCURSAL"].ToString()),
                         });
                     }
                     return response;
@@ -143,7 +151,8 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@papellidoMaterno", command.ApellidoMaterno, DbType.String, ParameterDirection.Input);
                 parameters.Add("@ptelefono", command.Telefono, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pcorreo", command.Correo, DbType.String, ParameterDirection.Input);
-                parameters.Add("@pidRol", command.IdRol, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pidRol", command.IdRol, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pidSucursal", command.IdSucursal, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
@@ -180,6 +189,58 @@ namespace DonShalo.Persistence.Repository
                 var codigo = parameters.Get<string>("codigo");
                 var mensaje = parameters.Get<string>("msj");
                 return new EliminarPersonalCommandDTO()
+                {
+                    Codigo = codigo,
+                    Mensaje = mensaje
+                };
+            }
+        }
+
+        public async Task<IEnumerable<ObtenerMenuPersonalQueryDTO>> ObtenerMenuPersonal(ObtenerMenuPersonalQuery command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pTermino", command.Termino, DbType.String, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_ObtenerMenuPersonal]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<ObtenerMenuPersonalQueryDTO> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new ObtenerMenuPersonalQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString()
+                        });
+                    }
+                    return response;
+                }
+            }
+        }
+
+        public async Task<AsignarResponsableCommandDTO> AsignarPersonal(AsignarResponsableCommand command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pIdPersonal", command.IdPersonal, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
+                parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
+
+                using var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[sp_AsignarResponsable]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                var codigo = parameters.Get<string>("codigo");
+                var mensaje = parameters.Get<string>("msj");
+                return new AsignarResponsableCommandDTO()
                 {
                     Codigo = codigo,
                     Mensaje = mensaje
