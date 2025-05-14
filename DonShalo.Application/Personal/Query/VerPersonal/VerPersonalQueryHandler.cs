@@ -28,7 +28,7 @@ namespace DonShalo.Application.Personal.Query.VerPersonal
 
         public Task<VerPersonalQueryDTO> Handle(VerPersonalQuery request, CancellationToken cancellationToken)
         {
-            var response = this._personalRepository.VerSucursales(request);
+            var response = this._personalRepository.VerPersonal(request);
             return response;
         }
     }

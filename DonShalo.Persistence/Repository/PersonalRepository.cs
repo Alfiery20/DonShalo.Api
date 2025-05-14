@@ -103,7 +103,7 @@ namespace DonShalo.Persistence.Repository
             }
         }
 
-        public async Task<VerPersonalQueryDTO> VerSucursales(VerPersonalQuery query)
+        public async Task<VerPersonalQueryDTO> VerPersonal(VerPersonalQuery query)
         {
             using (var cnx = _dataBase.GetConnection())
             {

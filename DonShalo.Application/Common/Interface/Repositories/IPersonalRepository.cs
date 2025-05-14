@@ -18,7 +18,7 @@ namespace DonShalo.Application.Common.Interface.Repositories
     {
         Task<RegistrarUsuarioCommandDTO> RegistrarPersonal(RegistrarUsuarioCommand command);
         Task<IEnumerable<ObtenerPersonalQueryDTO>> ObtenerPersonal(ObtenerPersonalQuery query);
-        Task<VerPersonalQueryDTO> VerSucursales(VerPersonalQuery query);
+        Task<VerPersonalQueryDTO> VerPersonal(VerPersonalQuery query);
         Task<EditarPersonalCommandDTO> EditarPersonal(EditarPersonalCommand command);
         Task<EliminarPersonalCommandDTO> EliminarPersonal(EliminarPersonalCommand command);
         Task<IEnumerable<ObtenerMenuPersonalQueryDTO>> ObtenerMenuPersonal(ObtenerMenuPersonalQuery command);
