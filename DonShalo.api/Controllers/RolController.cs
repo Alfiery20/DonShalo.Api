@@ -1,8 +1,11 @@
 ﻿using DonShalo.api.Filter;
 using DonShalo.Application.Personal.Query.VerPersonal;
+using DonShalo.Application.Rol.Command.ActualizarPermiso;
 using DonShalo.Application.Rol.Command.EditarRol;
 using DonShalo.Application.Rol.Command.EliminarRol;
 using DonShalo.Application.Rol.Command.RegistrarRol;
+using DonShalo.Application.Rol.Query.obtenerMenuRol;
+using DonShalo.Application.Rol.Query.ObtenerMenuxRol;
 using DonShalo.Application.Rol.Query.ObtenerRol;
 using DonShalo.Application.Rol.Query.VerRol;
 using DonShalo.Application.Sucursal.Command.AgregarSucursal;
@@ -83,6 +86,45 @@ namespace DonShalo.api.Controllers
             {
                 IdRol = id
             });
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("obtenerMenuRoles/{termino?}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenuRoles(string? termino)
+        {
+            var response = await Mediator.Send(new obtenerMenuRolQuery()
+            {
+                Termino = termino
+            });
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("obtenerMenuPorRoles/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenuXRoles(int id)
+        {
+            var response = await Mediator.Send(new ObtenerMenuxRolQuery()
+            {
+                IdRol = id
+            });
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("actualizarPermiso")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ActualizarPermiso(ActualizarPermisoCommand command)
+        {
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
     }

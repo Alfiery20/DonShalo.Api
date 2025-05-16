@@ -11,9 +11,12 @@ using DonShalo.Application.Personal.Command.EditarPersonal;
 using DonShalo.Application.Personal.Command.EliminarPersonal;
 using DonShalo.Application.Personal.Command.RegistrarUsuario;
 using DonShalo.Application.Personal.Query.VerPersonal;
+using DonShalo.Application.Rol.Command.ActualizarPermiso;
 using DonShalo.Application.Rol.Command.EditarRol;
 using DonShalo.Application.Rol.Command.EliminarRol;
 using DonShalo.Application.Rol.Command.RegistrarRol;
+using DonShalo.Application.Rol.Query.obtenerMenuRol;
+using DonShalo.Application.Rol.Query.ObtenerMenuxRol;
 using DonShalo.Application.Rol.Query.ObtenerRol;
 using DonShalo.Application.Rol.Query.VerRol;
 using DonShalo.Application.Sucursal.Query.ObtenerSucursal;
@@ -51,7 +54,8 @@ namespace DonShalo.Persistence.Repository
                         response.Add(new ObtenerRolQueryDTO()
                         {
                             Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
-                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString()
+                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString(),
+                            Estado = Convert.IsDBNull(reader["ESTADO"]) ? "" : reader["ESTADO"].ToString()
                         });
                     }
                     return response;
@@ -155,6 +159,89 @@ namespace DonShalo.Persistence.Repository
                 var codigo = parameters.Get<string>("codigo");
                 var mensaje = parameters.Get<string>("msj");
                 return new EliminarRolCommandDTO()
+                {
+                    Codigo = codigo,
+                    Mensaje = mensaje
+                };
+            }
+        }
+
+        public async Task<IEnumerable<obtenerMenuRolQueryDTO>> ObtenerMenuRol(obtenerMenuRolQuery query)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pTermino", query.Termino, DbType.String, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_ObtenerMenuRol]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<obtenerMenuRolQueryDTO> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new obtenerMenuRolQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString()
+                        });
+                    }
+                    return response;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<ObtenerMenuxRolQueryDTO>> ObtenerMenuXRol(ObtenerMenuxRolQuery query)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pIdRol", query.IdRol, DbType.Int32, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[sp_ObtenerMenuRol]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<ObtenerMenuxRolQueryDTO> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new ObtenerMenuxRolQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString(),
+                            Permiso = Convert.IsDBNull(reader["PERMISO"]) ? false : Convert.ToBoolean(reader["PERMISO"].ToString()),
+                            Padre = Convert.IsDBNull(reader["PADRE"]) ? 0 : Convert.ToInt32(reader["PADRE"].ToString())
+                        });
+                    }
+                    return response;
+                }
+            }
+        }
+
+        public async Task<ActualizarPermisoCommandDTO> ActualizarPermiso(ActualizarPermisoCommand command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pIdPermiso", command.IdPermiso, DbType.Boolean, ParameterDirection.Input);
+                parameters.Add("@pIdMenu", command.IdMenu, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pIdRol", command.IdRol, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
+                parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
+
+                using var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_ActualizarPermiso]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                var codigo = parameters.Get<string>("codigo");
+                var mensaje = parameters.Get<string>("msj");
+                return new ActualizarPermisoCommandDTO()
                 {
                     Codigo = codigo,
                     Mensaje = mensaje
