@@ -10,6 +10,7 @@ using DonShalo.Application.Common.Interface.Repositories;
 using DonShalo.Application.Mesa.Command.AgregarMesa;
 using DonShalo.Application.Mesa.Command.EditarMesa;
 using DonShalo.Application.Mesa.Command.EliminarMesa;
+using DonShalo.Application.Mesa.Query.ObtenerEstadoMesas;
 using DonShalo.Application.Mesa.Query.ObtenerMesa;
 using DonShalo.Application.Mesa.Query.VerMesa;
 using DonShalo.Persistence.Database;
@@ -167,6 +168,34 @@ namespace DonShalo.Persistence.Repository
                     Codigo = codigo,
                     Mensaje = mensaje
                 };
+            }
+        }
+
+        public async Task<IEnumerable<ObtenerEstadoMesasQueryDTO>> ObtenerEstadoMesas(ObtenerEstadoMesasQuery query)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pidPiso", query.IdPiso, DbType.Int32, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_ObtenerMesaPorPersonal]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<ObtenerEstadoMesasQueryDTO> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new ObtenerEstadoMesasQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Numero = Convert.IsDBNull(reader["NUMERO"]) ? "" : reader["NUMERO"].ToString(),
+                            Estado = Convert.IsDBNull(reader["ESTADO"]) ? 0 : Convert.ToInt32(reader["ESTADO"].ToString())
+                        });
+                    }
+                    return response;
+                }
             }
         }
     }

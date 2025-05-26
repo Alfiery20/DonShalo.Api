@@ -1,11 +1,9 @@
 ﻿using DonShalo.api.Filter;
-using DonShalo.Application.Mesa.Command.AgregarMesa;
-using DonShalo.Application.Mesa.Command.EditarMesa;
-using DonShalo.Application.Mesa.Command.EliminarMesa;
-using DonShalo.Application.Mesa.Query.ObtenerEstadoMesas;
-using DonShalo.Application.Mesa.Query.ObtenerMesa;
-using DonShalo.Application.Mesa.Query.VerMesa;
-using MediatR;
+using DonShalo.Application.Categoria.Command.AgregarCategoria;
+using DonShalo.Application.Categoria.Command.EditarCategoria;
+using DonShalo.Application.Categoria.Command.EliminarCategoria;
+using DonShalo.Application.Categoria.Query.ObtenerCategoria;
+using DonShalo.Application.Categoria.Query.VerCategoria;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DonShalo.api.Controllers
@@ -13,79 +11,65 @@ namespace DonShalo.api.Controllers
     [Route("api/v1/[controller]")]
     [ApiController]
     [AuthorizationFilter]
-    public class MesaController : AbstractController
+    public class CategoriaController : AbstractController
     {
         [HttpPost]
-        [Route("registrarMesa")]
+        [Route("registrarCategoria")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AgregarMesa(AgregarMesaCommand command)
+        public async Task<IActionResult> AgregarCategoria(AgregarCategoriaCommand command)
         {
             var response = await Mediator.Send(command);
             return Ok(response);
         }
 
         [HttpPost]
-        [Route("obtenerMesa")]
+        [Route("obtenerCategoria")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ObtenerMesa(ObtenerMesaQuery query)
+        public async Task<IActionResult> ObtenerCategoria(ObtenerCategoriaQuery query)
         {
             var response = await Mediator.Send(query);
             return Ok(response);
         }
 
         [HttpGet]
-        [Route("verMesa/{id}")]
+        [Route("verCategoria/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> VerMesa(int id)
+        public async Task<IActionResult> VerCategoria(int id)
         {
-            var response = await Mediator.Send(new VerMesaQuery()
+            var response = await Mediator.Send(new VerCategoriaQuery()
             {
-                IdMesa = id
+                Id = id
             });
             return Ok(response);
         }
 
         [HttpPut]
-        [Route("editarMesa")]
+        [Route("editarCategoria")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> EditarMesa(EditarMesaCommand command)
+        public async Task<IActionResult> EditarCategoria(EditarCategoriaCommand command)
         {
             var response = await Mediator.Send(command);
             return Ok(response);
         }
 
         [HttpDelete]
-        [Route("eliminarMesa/{id}")]
+        [Route("eliminarCategoria/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> EliminarMesa(int id)
+        public async Task<IActionResult> EliminarCategoria(int id)
         {
-            var response = await Mediator.Send(new EliminarMesaCommand()
+            var response = await Mediator.Send(new EliminarCategoriaCommand()
             {
-                IdMesa = id
-            });
-            return Ok(response);
-        }
-
-        [HttpGet]
-        [Route("obtenerEstadoMesas/{idPiso}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ObtenerEstadoMesas(int idPiso)
-        {
-            var response = await Mediator.Send(new ObtenerEstadoMesasQuery()
-            {
-                IdPiso = idPiso
+                IdCategoria = id
             });
             return Ok(response);
         }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DonShalo.Application.Mesa.Command.AgregarMesa;
 using DonShalo.Application.Mesa.Command.EditarMesa;
 using DonShalo.Application.Mesa.Command.EliminarMesa;
+using DonShalo.Application.Mesa.Query.ObtenerEstadoMesas;
 using DonShalo.Application.Mesa.Query.ObtenerMesa;
 using DonShalo.Application.Mesa.Query.VerMesa;
 
@@ -18,5 +19,6 @@ namespace DonShalo.Application.Common.Interface.Repositories
         Task<EliminarMesaCommandDTO> EliminarMesa(EliminarMesaCommand command);
         Task<IEnumerable<ObtenerMesaQueryDTO>> ObtenerMesa(ObtenerMesaQuery query);
         Task<VerMesaQueryDTO> VerMesa(VerMesaQuery query);
+        Task<IEnumerable<ObtenerEstadoMesasQueryDTO>> ObtenerEstadoMesas(ObtenerEstadoMesasQuery query);
     }
 }

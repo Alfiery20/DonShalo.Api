@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Autenticacion\Query\" />
+    <Folder Include="Pedido\Command\" />
   </ItemGroup>
 
 </Project>
