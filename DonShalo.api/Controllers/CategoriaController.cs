@@ -3,7 +3,9 @@ using DonShalo.Application.Categoria.Command.AgregarCategoria;
 using DonShalo.Application.Categoria.Command.EditarCategoria;
 using DonShalo.Application.Categoria.Command.EliminarCategoria;
 using DonShalo.Application.Categoria.Query.ObtenerCategoria;
+using DonShalo.Application.Categoria.Query.ObtenerMenuCategoria;
 using DonShalo.Application.Categoria.Query.VerCategoria;
+using DonShalo.Application.Sucursal.Query.ObtenerSucursal;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DonShalo.api.Controllers
@@ -24,14 +26,28 @@ namespace DonShalo.api.Controllers
             return Ok(response);
         }
 
-        [HttpPost]
-        [Route("obtenerCategoria")]
+        [HttpGet]
+        [Route("obtenerCategoria/{termino?}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ObtenerCategoria(ObtenerCategoriaQuery query)
+        public async Task<IActionResult> ObtenerCategoria(string? termino)
         {
-            var response = await Mediator.Send(query);
+            var response = await Mediator.Send(new ObtenerCategoriaQuery()
+            {
+                Termino = termino
+            });
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("obtenerMenuCategoria")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenuCategoria()
+        {
+            var response = await Mediator.Send(new ObtenerMenuCategoriaQuery() { });
             return Ok(response);
         }
 

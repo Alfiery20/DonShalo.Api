@@ -9,6 +9,7 @@ using DonShalo.Application.Categoria.Command.AgregarCategoria;
 using DonShalo.Application.Categoria.Command.EditarCategoria;
 using DonShalo.Application.Categoria.Command.EliminarCategoria;
 using DonShalo.Application.Categoria.Query.ObtenerCategoria;
+using DonShalo.Application.Categoria.Query.ObtenerMenuCategoria;
 using DonShalo.Application.Categoria.Query.VerCategoria;
 using DonShalo.Application.Common.Interface;
 using DonShalo.Application.Common.Interface.Repositories;
@@ -38,7 +39,7 @@ namespace DonShalo.Persistence.Repository
             {
                 DynamicParameters parameters = new DynamicParameters();
 
-                parameters.Add("@pnumero", command.Nombre, DbType.String, ParameterDirection.Input);
+                parameters.Add("@pnombre", command.Nombre, DbType.String, ParameterDirection.Input);
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
@@ -94,7 +95,7 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
                 using var reader = await cnx.ExecuteReaderAsync(
-                    "[dbo].[usp_EliminarMesa]",
+                    "[dbo].[usp_EliminarCategoria]",
                     param: parameters,
                     commandType: CommandType.StoredProcedure);
 
@@ -129,6 +130,31 @@ namespace DonShalo.Persistence.Repository
                             Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
                             Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString(),
                             Estado = Convert.IsDBNull(reader["ESTADO"]) ? "" : reader["ESTADO"].ToString()
+                        });
+                    }
+                    return response;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<ObtenerMenuCategoriaQueryDTO>> ObtenerMenuCategoria(ObtenerMenuCategoriaQuery query)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_ObtenerMenuCategoria]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<ObtenerMenuCategoriaQueryDTO> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new ObtenerMenuCategoriaQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString()
                         });
                     }
                     return response;

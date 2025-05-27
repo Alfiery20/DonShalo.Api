@@ -27,6 +27,7 @@ namespace DonShalo.Persistence
             services.AddSingleton<IMedioPagoRepository, MedioPagoRepository>();
             services.AddSingleton<IPedidoRepository, PedidoRepository>();
             services.AddSingleton<ICategoriaRepository, CategoriaRepository>();
+            services.AddSingleton<IPlatoRepository, PlatoRepository>();
 
             return services;
         }

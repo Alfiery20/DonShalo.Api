@@ -8,16 +8,16 @@ using DonShalo.Application.Common.Interface.Repositories;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace DonShalo.Application.Categoria.Command.EliminarCategoria
+namespace DonShalo.Application.Categoria.Query.ObtenerMenuCategoria
 {
-    public class EliminarCategoriaCommandHandler : IRequestHandler<EliminarCategoriaCommand, EliminarCategoriaCommandDTO>
+    public class ObtenerMenuCategoriaQueryHandler : IRequestHandler<ObtenerMenuCategoriaQuery, IEnumerable<ObtenerMenuCategoriaQueryDTO>>
     {
-        private readonly ILogger<EliminarCategoriaCommandHandler> _logger;
+        private readonly ILogger<ObtenerMenuCategoriaQueryHandler> _logger;
         private readonly IMapper _mapper;
         private readonly ICategoriaRepository _categoriaRepository;
 
-        public EliminarCategoriaCommandHandler(
-            ILogger<EliminarCategoriaCommandHandler> logger,
+        public ObtenerMenuCategoriaQueryHandler(
+            ILogger<ObtenerMenuCategoriaQueryHandler> logger,
             IMapper mapper,
             ICategoriaRepository categoriaRepository)
         {
@@ -25,9 +25,9 @@ namespace DonShalo.Application.Categoria.Command.EliminarCategoria
             this._mapper = mapper;
             this._categoriaRepository = categoriaRepository;
         }
-        public Task<EliminarCategoriaCommandDTO> Handle(EliminarCategoriaCommand request, CancellationToken cancellationToken)
+        public Task<IEnumerable<ObtenerMenuCategoriaQueryDTO>> Handle(ObtenerMenuCategoriaQuery request, CancellationToken cancellationToken)
         {
-            var response = this._categoriaRepository.EliminarCategoria(request);
+            var response = this._categoriaRepository.ObtenerMenuCategoria(request);
             return response;
         }
     }

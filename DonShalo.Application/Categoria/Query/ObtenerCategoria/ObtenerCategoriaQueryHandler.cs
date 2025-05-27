@@ -13,12 +13,12 @@ namespace DonShalo.Application.Categoria.Query.ObtenerCategoria
 {
     public class ObtenerCategoriaQueryHandler : IRequestHandler<ObtenerCategoriaQuery, IEnumerable<ObtenerCategoriaQueryDTO>>
     {
-        private readonly ILogger _logger;
+        private readonly ILogger<ObtenerCategoriaQueryHandler> _logger;
         private readonly IMapper _mapper;
         private readonly ICategoriaRepository _categoriaRepository;
 
         public ObtenerCategoriaQueryHandler(
-            ILogger logger,
+            ILogger<ObtenerCategoriaQueryHandler> logger,
             IMapper mapper,
             ICategoriaRepository categoriaRepository)
         {
