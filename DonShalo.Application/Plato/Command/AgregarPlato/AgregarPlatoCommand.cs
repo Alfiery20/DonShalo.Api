@@ -11,5 +11,6 @@ namespace DonShalo.Application.Plato.Command.AgregarPlato
     {
         public string Nombre { get; set; }
         public int IdCategoria { get; set; }
+        public double Precio { get; set; }
     }
 }

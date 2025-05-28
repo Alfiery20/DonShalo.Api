@@ -5,8 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dapper;
-using DonShalo.Application.Common.Interface
-
+using DonShalo.Application.Common.Interface;
 using DonShalo.Application.Common.Interface.Repositories;
 using DonShalo.Application.Plato.Command.AgregarPlato;
 using DonShalo.Application.Plato.Command.EditarPlato;
@@ -39,6 +38,7 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@pnombre", command.Nombre, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pidCategoria", command.IdCategoria, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("@pFecha", this._dateTimeService.HoraLocal(), DbType.DateTime, ParameterDirection.Input);
+                parameters.Add("@pPrecio", command.Precio, DbType.Double, ParameterDirection.Input);
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
@@ -109,7 +109,7 @@ namespace DonShalo.Persistence.Repository
                             Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
                             Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString(),
                             Categoria = Convert.IsDBNull(reader["CATEGORIA"]) ? 0 : Convert.ToInt32(reader["CATEGORIA"].ToString()),
-                            Monto = Convert.IsDBNull(reader["PRECIO"]) ? 0 : Convert.ToDouble(reader["PRECIO"].ToString()),
+                            Monto = Convert.IsDBNull(reader["MONTO"]) ? 0 : Convert.ToDouble(reader["MONTO"].ToString()),
                         };
                     }
                     return response;
@@ -126,8 +126,8 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@pId", command.Id, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("@pnombre", command.Nombre, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pidCategoria", command.IdCategoria, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@pPrecio", command.Monto, DbType.Int32, ParameterDirection.Input);
-                parameters.Add("@pFecha", this._dateTimeService.HoraLocal(), DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pPrecio", command.Monto, DbType.Double, ParameterDirection.Input);
+                parameters.Add("@pFecha", this._dateTimeService.HoraLocal(), DbType.DateTime, ParameterDirection.Input);
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
