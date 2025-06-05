@@ -2,6 +2,7 @@
 using DonShalo.Application.Plato.Command.AgregarPlato;
 using DonShalo.Application.Plato.Command.EditarPlato;
 using DonShalo.Application.Plato.Command.EliminarPlato;
+using DonShalo.Application.Plato.Query.ObtenerMenuPlato;
 using DonShalo.Application.Plato.Query.ObtenerPlato;
 using DonShalo.Application.Plato.Query.VerPlato;
 using Microsoft.AspNetCore.Mvc;
@@ -70,6 +71,20 @@ namespace DonShalo.api.Controllers
             var response = await Mediator.Send(new EliminarPlatoCommand()
             {
                 Id = id
+            });
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("obtenerMenuPlato/{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObtenerMenuPlato(int id)
+        {
+            var response = await Mediator.Send(new ObtenerMenuPlatoQuery()
+            {
+                IdCategoria = id
             });
             return Ok(response);
         }

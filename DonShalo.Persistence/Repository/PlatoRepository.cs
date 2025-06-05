@@ -10,6 +10,7 @@ using DonShalo.Application.Common.Interface.Repositories;
 using DonShalo.Application.Plato.Command.AgregarPlato;
 using DonShalo.Application.Plato.Command.EditarPlato;
 using DonShalo.Application.Plato.Command.EliminarPlato;
+using DonShalo.Application.Plato.Query.ObtenerMenuPlato;
 using DonShalo.Application.Plato.Query.ObtenerPlato;
 using DonShalo.Application.Plato.Query.VerPlato;
 using DonShalo.Persistence.Database;
@@ -168,6 +169,33 @@ namespace DonShalo.Persistence.Repository
                     Codigo = codigo,
                     Mensaje = mensaje
                 };
+            }
+        }
+
+        public async Task<IEnumerable<ObtenerMenuPlatoQueryDTO>> ObtenerMenuPlato(ObtenerMenuPlatoQuery query)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pidCategoria", query.IdCategoria, DbType.Int32, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_ObtenerMenuPlato]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<ObtenerMenuPlatoQueryDTO> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new ObtenerMenuPlatoQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString()
+                        });
+                    }
+                    return response;
+                }
             }
         }
     }
