@@ -44,7 +44,7 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
                 using var reader = await cnx.ExecuteReaderAsync(
-                    "[dbo].[sp_RegistrarCategoria]",
+                    "[dbo].[sp_RegistrarPlato]",
                     param: parameters,
                     commandType: CommandType.StoredProcedure);
 

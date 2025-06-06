@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="Autenticacion\Query\" />
-    <Folder Include="Cliente\Command\" />
     <Folder Include="Pedido\Command\" />
   </ItemGroup>
 
