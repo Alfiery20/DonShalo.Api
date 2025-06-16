@@ -15,6 +15,7 @@ using DonShalo.Application.Pedido.Command.EditarPedido;
 using DonShalo.Application.Pedido.Command.EliminarPedido;
 using DonShalo.Application.Pedido.Query.ObtenerDetallePedido;
 using DonShalo.Application.Pedido.Query.ObtenerPedidoMesa;
+using DonShalo.Application.Pedido.Query.VerDetallePedidoParaPagar;
 using DonShalo.Persistence.Database;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -56,7 +57,8 @@ namespace DonShalo.Persistence.Repository
                             ApellidoPaterno = Convert.IsDBNull(reader["APELLIDO_PATERNO_CLIENTE"]) ? "" : reader["APELLIDO_PATERNO_CLIENTE"].ToString(),
                             ApellidoMaterno = Convert.IsDBNull(reader["APELLIDO_MATERNO_CLIENTE"]) ? "" : reader["APELLIDO_MATERNO_CLIENTE"].ToString(),
                             RUC = Convert.IsDBNull(reader["RUC"]) ? "" : reader["RUC"].ToString(),
-                            RazonSocial = Convert.IsDBNull(reader["RAZON_SOCIAL"]) ? "" : reader["RAZON_SOCIAL"].ToString()
+                            RazonSocial = Convert.IsDBNull(reader["RAZON_SOCIAL"]) ? "" : reader["RAZON_SOCIAL"].ToString(),
+                            Estado = Convert.IsDBNull(reader["ESTADO"]) ? "" : reader["ESTADO"].ToString(),
                         };
                     }
                     return response;
@@ -129,7 +131,7 @@ namespace DonShalo.Persistence.Repository
                 parameters.Add("@pidPedido", command.IdPedido, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("@pidCliente", command.IdCliente, DbType.String, ParameterDirection.Input);
                 parameters.Add("@pdetPedidos", this.ConvertirAXML(command.DetallePedido.ToList()), DbType.Xml, ParameterDirection.Input);
-                
+
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
 
@@ -183,6 +185,68 @@ namespace DonShalo.Persistence.Repository
                         )
                     ));
             return xml.ToString();
+        }
+
+        public async Task<VerDetallePedidoParaPagarQueryDTO> VerDetallePedidoParaPagar(VerDetallePedidoParaPagarQuery query)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pidPedido", query.IdPedido, DbType.Int32, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_VerDetallePedidoParaPagar]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    VerDetallePedidoParaPagarQueryDTO response = new();
+                    while (reader.Read())
+                    {
+                        response = new VerDetallePedidoParaPagarQueryDTO()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            NroSerie = Convert.IsDBNull(reader["SERIE"]) ? "" : reader["SERIE"].ToString(),
+                            NroCorrelativo = Convert.IsDBNull(reader["CORRELATIVO"]) ? "" : reader["CORRELATIVO"].ToString(),
+                            ClienteNatural = Convert.IsDBNull(reader["CLIENTE_NATURAL"]) ? "" : reader["CLIENTE_NATURAL"].ToString(),
+                            ClienteJuridico = Convert.IsDBNull(reader["CLIENTE_JURIDICO"]) ? "" : reader["CLIENTE_JURIDICO"].ToString(),
+                            Personal = Convert.IsDBNull(reader["PERSONAL"]) ? "" : reader["PERSONAL"].ToString(),
+                            Mesa = Convert.IsDBNull(reader["MESA"]) ? "" : reader["MESA"].ToString()
+                        };
+                    }
+                    return response;
+                }
+            }
+        }
+
+        public async Task<IEnumerable<VerDetallePedidoParaPagarDetalle>> VerDetallesPago(int idPedido)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pidPedido", idPedido, DbType.Int32, ParameterDirection.Input);
+
+                using (var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_VerDetallesPago]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure))
+                {
+                    List<VerDetallePedidoParaPagarDetalle> response = new();
+                    while (reader.Read())
+                    {
+                        response.Add(new VerDetallePedidoParaPagarDetalle()
+                        {
+                            Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            Plato = Convert.IsDBNull(reader["PLATO"]) ? "" : reader["PLATO"].ToString(),
+                            Precio = Convert.IsDBNull(reader["PRECIO"]) ? 0 : Convert.ToDouble(reader["PRECIO"].ToString()),
+                            Cantidad = Convert.IsDBNull(reader["CANTIDAD"]) ? 0 : Convert.ToInt32(reader["CANTIDAD"].ToString()),
+                            Subtotal = Convert.IsDBNull(reader["SUBTOTAL"]) ? 0 : Convert.ToDouble(reader["SUBTOTAL"].ToString()),
+                        });
+                    }
+                    return response;
+                }
+            }
         }
 
         private string ConvertirAXML(List<EditarPedidoDetalle> detalles)

@@ -18,5 +18,6 @@ namespace DonShalo.Application.Pedido.Query.ObtenerPedidoMesa
         public string ApellidoMaterno { get; set; }
         public string RUC { get; set; }
         public string RazonSocial { get; set; }
+        public string Estado { get; set; }
     }
 }
