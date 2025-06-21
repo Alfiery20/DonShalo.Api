@@ -210,7 +210,9 @@ namespace DonShalo.Persistence.Repository
                             NroCorrelativo = Convert.IsDBNull(reader["CORRELATIVO"]) ? "" : reader["CORRELATIVO"].ToString(),
                             ClienteNatural = Convert.IsDBNull(reader["CLIENTE_NATURAL"]) ? "" : reader["CLIENTE_NATURAL"].ToString(),
                             ClienteJuridico = Convert.IsDBNull(reader["CLIENTE_JURIDICO"]) ? "" : reader["CLIENTE_JURIDICO"].ToString(),
+                            IdPersonal = Convert.IsDBNull(reader["ID_PERSONAL"]) ? 0 : Convert.ToInt32(reader["ID_PERSONAL"].ToString()),
                             Personal = Convert.IsDBNull(reader["PERSONAL"]) ? "" : reader["PERSONAL"].ToString(),
+                            IdMesa = Convert.IsDBNull(reader["ID_MESA"]) ? 0 : Convert.ToInt32(reader["ID_MESA"].ToString()),
                             Mesa = Convert.IsDBNull(reader["MESA"]) ? "" : reader["MESA"].ToString()
                         };
                     }
@@ -238,6 +240,7 @@ namespace DonShalo.Persistence.Repository
                         response.Add(new VerDetallePedidoParaPagarDetalle()
                         {
                             Id = Convert.IsDBNull(reader["ID"]) ? 0 : Convert.ToInt32(reader["ID"].ToString()),
+                            IdPlato = Convert.IsDBNull(reader["ID_PLATO"]) ? 0 : Convert.ToInt32(reader["ID_PLATO"].ToString()),
                             Plato = Convert.IsDBNull(reader["PLATO"]) ? "" : reader["PLATO"].ToString(),
                             Precio = Convert.IsDBNull(reader["PRECIO"]) ? 0 : Convert.ToDouble(reader["PRECIO"].ToString()),
                             Cantidad = Convert.IsDBNull(reader["CANTIDAD"]) ? 0 : Convert.ToInt32(reader["CANTIDAD"].ToString()),

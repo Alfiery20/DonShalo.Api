@@ -9,6 +9,7 @@ namespace DonShalo.Application.Pedido.Query.VerDetallePedidoParaPagar
     public class VerDetallePedidoParaPagarDetalle
     {
         public int Id { get; set; }
+        public int IdPlato { get; set; }
         public string Plato { get; set; }
         public double Precio { get; set; }
         public int Cantidad { get; set; }

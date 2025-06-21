@@ -13,7 +13,9 @@ namespace DonShalo.Application.Pedido.Query.VerDetallePedidoParaPagar
         public string NroCorrelativo { get; set; }
         public string ClienteNatural { get; set; }
         public string ClienteJuridico { get; set; }
+        public int IdPersonal { get; set; }
         public string Personal { get; set; }
+        public int IdMesa { get; set; }
         public string Mesa { get; set; }
         public VerDetallePedidoParaPagarDetalle[] Detalles { get; set; }
     }

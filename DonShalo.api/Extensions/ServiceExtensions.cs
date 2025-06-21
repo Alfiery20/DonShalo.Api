@@ -29,7 +29,7 @@ namespace DonShalo.api.Extensions
             })
             .AddJwtBearer(config =>
             {
-                config.RequireHttpsMetadata = false;
+                config.RequireHttpsMetadata = true;
                 config.SaveToken = true;
                 config.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -59,49 +59,6 @@ namespace DonShalo.api.Extensions
                 };
             });
 
-            return services;
-        }
-
-        public static IServiceCollection AddCustomAuthentication_old(this IServiceCollection services, IConfiguration configuration)
-        {
-            var appSettings = configuration.Get<AppSettings>();
-            var jwtSettings = configuration.GetSection(Constants.JwtSettings).Get<JwtSettings>();
-
-            services.AddAuthentication(config =>
-            {
-                config.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(config =>
-            {
-                config.RequireHttpsMetadata = false;
-                config.SaveToken = true;
-                config.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key)),
-                    RequireSignedTokens = true,
-                    ValidateIssuer = true,
-                    ValidIssuer = jwtSettings.Issuer,
-                    ValidateAudience = jwtSettings.ValidateAudience,
-                    ValidAudience = appSettings.ApplicationName,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.FromMinutes(5),
-                };
-                config.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        if (context.SecurityToken is JwtSecurityToken accessToken)
-                        {
-                            if (context.Principal.Identity is ClaimsIdentity identity)
-                            {
-                                identity.AddClaim(new Claim("access_token", accessToken.RawData));
-                            }
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-            });
             return services;
         }
 
@@ -171,7 +128,6 @@ namespace DonShalo.api.Extensions
 
             services.Configure<ExternalServicesSettings>(configuration);
             services.Configure<JwtSettings>(configuration.GetSection(Constants.JwtSettings));
-            //var rabbitMQSettings = configuration.GetSection(Constants.RabbitMQSettings).Get<RabbitMQSettings>();
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;

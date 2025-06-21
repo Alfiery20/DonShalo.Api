@@ -36,5 +36,13 @@ namespace DonShalo.api.Controllers
             });
             return Ok(response);
         }
+
+        [HttpGet("token-check")]
+        public IActionResult TokenCheck()
+        {
+            var authHeader = Request.Headers["Authorization"].ToString();
+            return Ok($"Header recibido: {authHeader}");
+        }
+
     }
 }
