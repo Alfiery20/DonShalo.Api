@@ -10,6 +10,7 @@ using DonShalo.Application.Common.Interface.Repositories;
 using DonShalo.Application.Mesa.Command.AgregarMesa;
 using DonShalo.Application.Mesa.Command.EditarMesa;
 using DonShalo.Application.Mesa.Command.EliminarMesa;
+using DonShalo.Application.Mesa.Command.LimpiarMesa;
 using DonShalo.Application.Mesa.Query.ObtenerEstadoMesas;
 using DonShalo.Application.Mesa.Query.ObtenerMesa;
 using DonShalo.Application.Mesa.Query.VerMesa;
@@ -196,6 +197,31 @@ namespace DonShalo.Persistence.Repository
                     }
                     return response;
                 }
+            }
+        }
+
+        public async Task<LimpiarMesaCommandDTO> LimpiarMesa(LimpiarMesaCommand command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pidMesa", command.IdMesa, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
+                parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
+
+                using var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_LimpiarMesa]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                var codigo = parameters.Get<string>("codigo");
+                var mensaje = parameters.Get<string>("msj");
+                return new LimpiarMesaCommandDTO()
+                {
+                    Codigo = codigo,
+                    Mensaje = mensaje
+                };
             }
         }
     }

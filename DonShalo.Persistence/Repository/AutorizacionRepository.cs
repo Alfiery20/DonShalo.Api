@@ -47,6 +47,7 @@ namespace DonShalo.Persistence.Repository
                             Nombre = Convert.IsDBNull(reader["NOMBRE"]) ? "" : reader["NOMBRE"].ToString(),
                             Ruta = Convert.IsDBNull(reader["RUTA"]) ? "" : reader["RUTA"].ToString(),
                             IdMenuPadre = Convert.IsDBNull(reader["ID_PADRE"]) ? 0 : Convert.ToInt32(reader["ID_PADRE"].ToString()),
+                            Icono = Convert.IsDBNull(reader["ICONO"]) ? "" : reader["ICONO"].ToString(),
                             Orden = Convert.IsDBNull(reader["ORDEN"]) ? 0 : Convert.ToInt32(reader["ORDEN"].ToString())
                         });
                     }

@@ -13,6 +13,8 @@ using DonShalo.Application.Mesa.Query.VerMesa;
 using DonShalo.Application.Pedido.Command.AgregarPedido;
 using DonShalo.Application.Pedido.Command.EditarPedido;
 using DonShalo.Application.Pedido.Command.EliminarPedido;
+using DonShalo.Application.Pedido.Command.PagarPedido;
+using DonShalo.Application.Pedido.Command.PagarPedidoDividido;
 using DonShalo.Application.Pedido.Query.ObtenerDetallePedido;
 using DonShalo.Application.Pedido.Query.ObtenerPedidoMesa;
 using DonShalo.Application.Pedido.Query.VerDetallePedidoParaPagar;
@@ -130,7 +132,7 @@ namespace DonShalo.Persistence.Repository
 
                 parameters.Add("@pidPedido", command.IdPedido, DbType.Int32, ParameterDirection.Input);
                 parameters.Add("@pidCliente", command.IdCliente, DbType.String, ParameterDirection.Input);
-                parameters.Add("@pdetPedidos", this.ConvertirAXML(command.DetallePedido.ToList()), DbType.Xml, ParameterDirection.Input);
+                parameters.Add("@pdetPedidos", this.ConvertirAEditarAXML(command.DetallePedido.ToList()), DbType.Xml, ParameterDirection.Input);
 
                 parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
                 parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
@@ -173,18 +175,6 @@ namespace DonShalo.Persistence.Repository
                     Mensaje = mensaje
                 };
             }
-        }
-
-        private string ConvertirAXML(List<AgregarPedidoDetalle> detalles)
-        {
-            var xml = new XElement("detalles",
-                    detalles.Select(p =>
-                        new XElement("detalle",
-                            new XElement("idPlato", p.IdPlato),
-                            new XElement("cantidad", p.Cantidad)
-                        )
-                    ));
-            return xml.ToString();
         }
 
         public async Task<VerDetallePedidoParaPagarQueryDTO> VerDetallePedidoParaPagar(VerDetallePedidoParaPagarQuery query)
@@ -252,7 +242,59 @@ namespace DonShalo.Persistence.Repository
             }
         }
 
-        private string ConvertirAXML(List<EditarPedidoDetalle> detalles)
+        public async Task<PagarPedidoDivididoCommandDTO> PagarPedidoDividido(PagarPedidoDivididoCommand command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pidPedido", command.IdPedido, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@pdetPedido", this.ConvertirPedidoAXML(command.DetallePedido.ToList()), DbType.Xml, ParameterDirection.Input);
+                parameters.Add("@pdetSubpedidos", this.ConvertirDivididosSubcuentasAXML(command.Subcuentas.ToList()), DbType.Xml, ParameterDirection.Input);
+                parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
+                parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
+
+                using var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_RegistrarPedidoDivido]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                var codigo = parameters.Get<string>("codigo");
+                var mensaje = parameters.Get<string>("msj");
+                return new PagarPedidoDivididoCommandDTO()
+                {
+                    Codigo = codigo,
+                    Mensaje = mensaje
+                };
+            }
+        }
+
+        public async Task<PagarPedidoCommandDTO> PagarPedido(PagarPedidoCommand command)
+        {
+            using (var cnx = _dataBase.GetConnection())
+            {
+                DynamicParameters parameters = new DynamicParameters();
+
+                parameters.Add("@pidPedido", command.IdPedido, DbType.Int32, ParameterDirection.Input);
+                parameters.Add("@codigo", "", DbType.String, ParameterDirection.Output);
+                parameters.Add("@msj", "", DbType.String, ParameterDirection.Output);
+
+                using var reader = await cnx.ExecuteReaderAsync(
+                    "[dbo].[usp_PagarPedido]",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure);
+
+                var codigo = parameters.Get<string>("codigo");
+                var mensaje = parameters.Get<string>("msj");
+                return new PagarPedidoCommandDTO()
+                {
+                    Codigo = codigo,
+                    Mensaje = mensaje
+                };
+            }
+        }
+
+        private string ConvertirAXML(List<AgregarPedidoDetalle> detalles)
         {
             var xml = new XElement("detalles",
                     detalles.Select(p =>
@@ -261,6 +303,46 @@ namespace DonShalo.Persistence.Repository
                             new XElement("cantidad", p.Cantidad)
                         )
                     ));
+            return xml.ToString();
+        }
+
+        private string ConvertirAEditarAXML(List<EditarPedidoDetalle> detalles)
+        {
+            var xml = new XElement("detalles",
+                    detalles.Select(p =>
+                        new XElement("detalle",
+                            new XElement("idPlato", p.IdPlato),
+                            new XElement("cantidad", p.Cantidad)
+                        )
+                    ));
+            return xml.ToString();
+        }
+
+        private string ConvertirPedidoAXML(List<PagarPedidoDivididoDetalle> detalles)
+        {
+            var xml = new XElement("detalles",
+                    detalles.Select(p =>
+                        new XElement("detalle",
+                            new XElement("idPlato", p.IdPlato),
+                            new XElement("cantidad", p.Cantidad)
+                        )
+                    ));
+            return xml.ToString();
+        }
+
+        private string ConvertirDivididosSubcuentasAXML(List<PagarPedidoDivididoSubcuenta> detalles)
+        {
+            var xml = new XElement("pedido",
+                    detalles.Select(p =>
+                        new XElement("informacion",
+                            new XElement("idCliente", p.IdCliente),
+                            new XElement("detallesSubcuenta",
+                                p.DetallePedidoSubcuenta.Select(o =>
+                                    new XElement("detalleSubcuenta",
+                                        new XElement("idPlato", o.IdPlato),
+                                        new XElement("cantidad", o.Cantidad)))
+                        )
+                    )));
             return xml.ToString();
         }
     }

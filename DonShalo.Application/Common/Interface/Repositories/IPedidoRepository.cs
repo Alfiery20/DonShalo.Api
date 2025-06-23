@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using DonShalo.Application.Pedido.Command.AgregarPedido;
 using DonShalo.Application.Pedido.Command.EditarPedido;
 using DonShalo.Application.Pedido.Command.EliminarPedido;
+using DonShalo.Application.Pedido.Command.PagarPedido;
+using DonShalo.Application.Pedido.Command.PagarPedidoDividido;
 using DonShalo.Application.Pedido.Query.ObtenerDetallePedido;
 using DonShalo.Application.Pedido.Query.ObtenerPedidoMesa;
 using DonShalo.Application.Pedido.Query.VerDetallePedidoParaPagar;
@@ -21,5 +23,7 @@ namespace DonShalo.Application.Common.Interface.Repositories
         Task<EliminarPedidoCommandDTO> EliminarPedido(EliminarPedidoCommand command);
         Task<VerDetallePedidoParaPagarQueryDTO> VerDetallePedidoParaPagar(VerDetallePedidoParaPagarQuery query);
         Task<IEnumerable<VerDetallePedidoParaPagarDetalle>> VerDetallesPago(int idPedido);
+        Task<PagarPedidoDivididoCommandDTO> PagarPedidoDividido(PagarPedidoDivididoCommand command);
+        Task<PagarPedidoCommandDTO> PagarPedido(PagarPedidoCommand command);
     }
 }

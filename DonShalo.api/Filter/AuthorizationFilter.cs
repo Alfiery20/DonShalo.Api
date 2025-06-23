@@ -72,8 +72,6 @@ namespace DonShalo.api.Filter
 
                     context.HttpContext.Session.SetString("dataUser", currenUserSerialize);
                 }
-
-                Debug.WriteLine("Token válido.");
             }
             catch (Exception ex)
             {

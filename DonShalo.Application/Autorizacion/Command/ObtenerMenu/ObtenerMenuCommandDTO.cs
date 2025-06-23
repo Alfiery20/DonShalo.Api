@@ -13,6 +13,7 @@ namespace DonShalo.Application.Autorizacion.Command.ObtenerMenu
         public string Ruta { get; set; }
         public int IdMenuPadre { get; set; }
         public int Orden { get; set; }
+        public string Icono { get; set; }
         public List<ObtenerMenuCommandDTO> MenuHijo { get; set; }
     }
 }

@@ -2,6 +2,8 @@
 using DonShalo.Application.Pedido.Command.AgregarPedido;
 using DonShalo.Application.Pedido.Command.EditarPedido;
 using DonShalo.Application.Pedido.Command.EliminarPedido;
+using DonShalo.Application.Pedido.Command.PagarPedido;
+using DonShalo.Application.Pedido.Command.PagarPedidoDividido;
 using DonShalo.Application.Pedido.Query.ObtenerDetallePedido;
 using DonShalo.Application.Pedido.Query.ObtenerPedidoMesa;
 using DonShalo.Application.Pedido.Query.VerDetallePedidoParaPagar;
@@ -92,6 +94,28 @@ namespace DonShalo.api.Controllers
             {
                 IdPedido = id
             });
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("pagarPedidoDividido")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> PagarPedidoDividido(PagarPedidoDivididoCommand command)
+        {
+            var response = await Mediator.Send(command);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("pagarPedido")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> PagarPedido(PagarPedidoCommand command)
+        {
+            var response = await Mediator.Send(command);
             return Ok(response);
         }
     }

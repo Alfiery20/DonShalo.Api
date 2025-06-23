@@ -2,11 +2,13 @@
 using DonShalo.Application.Mesa.Command.AgregarMesa;
 using DonShalo.Application.Mesa.Command.EditarMesa;
 using DonShalo.Application.Mesa.Command.EliminarMesa;
+using DonShalo.Application.Mesa.Command.LimpiarMesa;
 using DonShalo.Application.Mesa.Query.ObtenerEstadoMesas;
 using DonShalo.Application.Mesa.Query.ObtenerMesa;
 using DonShalo.Application.Mesa.Query.VerMesa;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto;
 
 namespace DonShalo.api.Controllers
 {
@@ -86,6 +88,20 @@ namespace DonShalo.api.Controllers
             var response = await Mediator.Send(new ObtenerEstadoMesasQuery()
             {
                 IdPiso = idPiso
+            });
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("limpiarMesa/{idMesa}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> LimpiarMesa(int idMesa)
+        {
+            var response = await Mediator.Send(new LimpiarMesaCommand()
+            {
+                IdMesa = idMesa
             });
             return Ok(response);
         }
